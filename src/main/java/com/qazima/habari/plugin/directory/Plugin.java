@@ -33,9 +33,9 @@ public class Plugin extends com.qazima.habari.plugin.core.Plugin {
     @JsonProperty("path")
     private String path = "./";
 
-    public int process(HttpExchange exchange, Content content) {
+    public int process(HttpExchange httpExchange, Content content) {
         String localPath = getPath();
-        String remotePath = exchange.getRequestURI().toString().replace('/', File.separatorChar);
+        String remotePath = httpExchange.getRequestURI().toString().replace('/', File.separatorChar);
         String fileName = Path.of(localPath, remotePath).toString();
         if (remotePath.endsWith(File.separator)) {
             String defaultPage = getDefaultPages().stream().filter(dp -> new File(Path.of(localPath, remotePath, dp).toString()).exists()).findFirst().orElse("");
