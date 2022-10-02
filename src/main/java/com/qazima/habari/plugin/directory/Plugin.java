@@ -15,6 +15,7 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @JsonTypeName("com.qazima.habari.plugin.directory.Plugin")
 public class Plugin extends com.qazima.habari.plugin.core.Plugin {
@@ -33,11 +34,15 @@ public class Plugin extends com.qazima.habari.plugin.core.Plugin {
     @JsonProperty("path")
     private String path = "./";
 
+    private boolean isNullOrEmpty(String string) {
+        return string == null || string.isEmpty();
+    }
+
     public int process(HttpExchange httpExchange, Content content) {
         String localPath = getPath();
-        String remotePath = httpExchange.getRequestURI().toString().replace('/', File.separatorChar);
+        String remotePath = Pattern.compile(getUri()).matcher(httpExchange.getRequestURI().getPath().replace('/', File.separatorChar)).replaceAll("$2");
         String fileName = Path.of(localPath, remotePath).toString();
-        if (remotePath.endsWith(File.separator)) {
+        if (remotePath.endsWith(File.separator) || isNullOrEmpty(remotePath)) {
             String defaultPage = getDefaultPages().stream().filter(dp -> new File(Path.of(localPath, remotePath, dp).toString()).exists()).findFirst().orElse("");
             fileName = Path.of(localPath, remotePath, defaultPage).toString();
         }

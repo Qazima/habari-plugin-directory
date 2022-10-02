@@ -4,7 +4,7 @@ This is a plugin which permit Habari to explore files and directories and serve 
 
 ## Configuration
 ```json
-        {
+{
   "configurationUri": "^/config.*",
   "connectionType": "com.qazima.habari.plugin.directory.Plugin",
   "defaultPages": [
@@ -18,6 +18,6 @@ This is a plugin which permit Habari to explore files and directories and serve 
   ],
   "metadataUri": "^/metadata.*",
   "path": "/var/www/habari/",
-  "uri": "^/(?!api/contact|img).*"
+  "uri": "(^/(?!api/contact|img))(.*)"
 }
 ```
