@@ -1,9 +1,11 @@
-package com.qazima.habari.plugin.directory;
+package com.qazima.habari.plugin.directory.deserializer;
+
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.qazima.habari.plugin.directory.ErrorPage;
 
 import java.io.IOException;
 
