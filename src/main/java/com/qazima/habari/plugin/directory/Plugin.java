@@ -21,29 +21,19 @@ import java.util.regex.Pattern;
 public class Plugin extends com.qazima.habari.plugin.core.Plugin {
     @Getter
     @Setter
-    @JsonProperty("configurationUri")
-    private String configurationUri;
-    @Getter
-    @JsonProperty("defaultPages")
-    private final List<String> defaultPages = new ArrayList<>();
-    @Getter
-    @JsonProperty("errorPages")
-    private final List<ErrorPage> errorPages = new ArrayList<>();
-    @Getter
-    @Setter
-    @JsonProperty("path")
-    private String path = "./";
+    @JsonProperty("configuration")
+    private com.qazima.habari.plugin.directory.Configuration configuration;
 
     private boolean isNullOrEmpty(String string) {
         return string == null || string.isEmpty();
     }
 
     public int process(HttpExchange httpExchange, Content content) {
-        String localPath = getPath();
-        String remotePath = Pattern.compile(getUri()).matcher(httpExchange.getRequestURI().getPath().replace('/', File.separatorChar)).replaceAll("$2");
+        String localPath = getConfiguration().getPath();
+        String remotePath = Pattern.compile(getConfiguration().getUri()).matcher(httpExchange.getRequestURI().getPath().replace('/', File.separatorChar)).replaceAll("$2");
         String fileName = Path.of(localPath, remotePath).toString();
         if (remotePath.endsWith(File.separator) || isNullOrEmpty(remotePath)) {
-            String defaultPage = getDefaultPages().stream().filter(dp -> new File(Path.of(localPath, remotePath, dp).toString()).exists()).findFirst().orElse("");
+            String defaultPage = getConfiguration().getDefaultPages().stream().filter(dp -> new File(Path.of(localPath, remotePath, dp).toString()).exists()).findFirst().orElse("");
             fileName = Path.of(localPath, remotePath, defaultPage).toString();
         }
 
@@ -67,7 +57,7 @@ public class Plugin extends com.qazima.habari.plugin.core.Plugin {
         }
 
         if(content.getStatusCode() != HttpStatus.SC_OK) {
-            Optional<ErrorPage> errorPage = getErrorPages().stream().filter(ep -> ep.getCode() == content.getStatusCode()).findFirst();
+            Optional<ErrorPage> errorPage = getConfiguration().getErrorPages().stream().filter(ep -> ep.getCode() == content.getStatusCode()).findFirst();
             if(errorPage.isPresent()) {
                 String errorFilePath = errorPage.get().getPage();
                 File errorFile = new File(errorFilePath);
