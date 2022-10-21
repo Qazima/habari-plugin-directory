@@ -21,7 +21,7 @@ This is a plugin which permit Habari to explore files and directories and serve 
       }
     ],
     "path": "/var/www/habari/",
-    "uri": "(^/(?!api/contact|img))(.*)"
+    "uri": "(^/)(.*)"
   }
 }
 ```
